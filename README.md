@@ -32,80 +32,88 @@ Return values:
 
 
 
-# MCQ Analysis Metrics
-### 1. **Complexity**
-   - Average semantic similarity between options in a question:
-   \[
-   \text{Complexity}_i = \frac{1}{\binom{n}{2}} \sum_{j=1}^{n-1} \sum_{k=j+1}^{n} \text{cosine\_similarity}(\text{option}_j, \text{option}_k)
-   \]
-   where \( n \) is the number of options in question \( i \).
+### MCQ Analyzer Formulas
 
-### 2. **Subject Alignment**
-   - Similarity between the question text and the correct answer:
-   \[
-   \text{Subject Alignment}_i = \text{cosine\_similarity}(\text{question}_i, \text{correct\_answer}_i)
-   \]
+### Complexity
+Average semantic similarity between options in a question:
 
-### 3. **Average Option Similarity**
-   - Average similarity between all pairs of options in a question:
-   \[
-   \text{Avg Option Similarity}_i = \text{Complexity}_i
-   \]
+Complexity_i = (1 / C(n, 2)) * Σ_{j=1}^{n-1} Σ_{k=j+1}^n cosine_similarity(option_j, option_k)
 
-### 4. **Answer Similarity**
-   - Similarity between the student's answer and the correct answer:
-   \[
-   \text{Answer Similarity}_i = \text{cosine\_similarity}(\text{student\_answer}_i, \text{correct\_answer}_i)
-   \]
 
-### 5. **Answer Distribution**
-   - Distribution of answers across correct, partially correct, and incorrect:
-   \[
-   \text{Answer Distribution}_i = 
-   \begin{cases} 
-      \text{Correct} & \text{if } \text{student\_answer}_i = \text{correct\_answer}_i \\
-      \text{Partially Correct} & \text{if } \text{Answer Similarity}_i > 0.7 \text{ and not correct} \\
-      \text{Incorrect} & \text{otherwise} 
-   \end{cases}
-   \]
+where `n` is the number of options in question `i`, and `C(n, 2)` represents the combination formula for choosing 2 items from `n`.
 
-### 6. **Raw Score**
-   - Fraction of correctly answered questions:
-   \[
-   \text{Raw Score} = \frac{\sum_{i=1}^{N} \text{Correct}_i}{N}
-   \]
-   where \( N \) is the total number of questions.
+### Subject Alignment
+Similarity between the question text and the correct answer:
 
-### 7. **Weighted Score**
-   - Average similarity across all questions:
-   \[
-   \text{Weighted Score} = \frac{1}{N} \sum_{i=1}^{N} \text{Answer Similarity}_i
-   \]
+Subject_Alignment_i = cosine_similarity(question_i, correct_answer_i)
 
-### 8. **Average Answer Similarity**
-   - Mean similarity across all questions:
-   \[
-   \text{Average Answer Similarity} = \text{Weighted Score}
-   \]
 
-### 9. **Concept Consistency**
-   - Standard deviation of answer similarities across questions:
-   \[
-   \text{Concept Consistency} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (\text{Answer Similarity}_i - \text{Weighted Score})^2}
-   \]
 
-### 10. **Concept Mastery**
-   - Weighted score for mastery level:
-   \[
-   \text{Concept Mastery Score} = 0.4 \times \text{Weighted Score} + 0.4 \times \text{Average Answer Similarity} + 0.2 \times (1 - \text{Concept Consistency})
-   \]
-   - Mastery Levels:
-   \[
-   \text{Concept Mastery} = 
-   \begin{cases} 
-      \text{Expert} & \text{if } \text{Concept Mastery Score} \geq 0.9 \\
-      \text{Advanced} & \text{if } 0.8 \leq \text{Concept Mastery Score} < 0.9 \\
-      \text{Proficient} & \text{if } 0.7 \leq \text{Concept Mastery Score} < 0.8 \\
-      \text{Developing} & \text{if } 0.6 \leq \text{Concept Mastery Score} < 0.7 \\
-      \text{Basic} & \text{if } \text{Concept Mastery Score} < 0.6 \\
-   \end{cases}
+### Average Option Similarity
+Average similarity between all pairs of options in a question:
+
+Avg_Option_Similarity_i = Complexity_i
+
+
+
+### Answer Similarity
+Similarity between the student's answer and the correct answer:
+
+Answer_Similarity_i = cosine_similarity(student_answer_i, correct_answer_i)
+
+
+
+### Answer Distribution
+Distribution of answers across correct, partially correct, and incorrect:
+
+Answer_Distribution_i =
+Correct if student_answer_i == correct_answer_i
+Partially Correct if Answer_Similarity_i > 0.7 and student_answer_i ≠ correct_answer_i
+Incorrect otherwise
+
+
+
+### Raw Score
+Fraction of correctly answered questions:
+
+Raw_Score = (Σ_{i=1}^N Correct_i) / N
+
+
+where `N` is the total number of questions.
+
+### Weighted Score
+Average similarity across all questions:
+
+Weighted_Score = (1 / N) * Σ_{i=1}^N Answer_Similarity_i
+
+
+
+### Average Answer Similarity
+Mean similarity across all questions:
+
+Average_Answer_Similarity = Weighted_Score
+
+
+
+### Concept Consistency
+Standard deviation of answer similarities across questions:
+
+Concept_Consistency = sqrt((1 / N) * Σ_{i=1}^N (Answer_Similarity_i - Weighted_Score)^2)
+
+
+
+### Concept Mastery
+Weighted score for mastery level:
+
+Concept_Mastery_Score = 0.4 * Weighted_Score + 0.4 * Average_Answer_Similarity + 0.2 * (1 - Concept_Consistency)
+
+
+Mastery Levels:
+
+Concept_Mastery =
+Expert if Concept_Mastery_Score >= 0.9
+Advanced if 0.8 <= Concept_Mastery_Score < 0.9
+Proficient if 0.7 <= Concept_Mastery_Score < 0.8
+Developing if 0.6 <= Concept_Mastery_Score < 0.7
+Basic if Concept_Mastery_Score < 0.6
+
